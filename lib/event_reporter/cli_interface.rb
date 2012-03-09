@@ -8,7 +8,8 @@ module EventReporter
         puts "Please enter a command (type 'help' for a list of commands):"
         command = gets.chomp
         puts "\n"
-        puts EventReporter::CommandFactory.get(command).run
+        command_instance = EventReporter::CommandFactory.get(command)
+        puts command_instance.run
         puts "\n"
       end
 
