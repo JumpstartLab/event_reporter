@@ -2,7 +2,7 @@ module EventReporter
   module Command
     class Exit
       def run
-        "Goodbye!"
+        "Goodbye!\n"
       end
     end
   end
