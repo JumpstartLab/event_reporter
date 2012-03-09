@@ -11,17 +11,23 @@ class MockInput
 end
 
 describe EventReporter::Cli do
-  it "gets a command from the user and runs the command" do
-    output = []
-    input = MockInput.new
-    command_from_user = 'exit'
-    input.stub(:gets) { command_from_user }
-    command = double("command")
+  let(:output) { [] }
+  let(:input) { MockInput.new }
+  let(:command) { double("command") }
+  let(:cli) { EventReporter::Cli.new(input, output) }
 
-    cli = EventReporter::Cli.new(input, output)
+  # I test both here because I need the exit command to end the loop.
+  it "knows how to deal with commands that both take arguments and do not take arguments" do
+    command_from_user = 'load'
+    command_arguments = 'my_file.csv'
 
-    EventReporter::CommandFactory.stub(:get).with(command_from_user) { command }
-    command.should_receive(:run)
+    input.stub(:gets).and_return([command_from_user, command_arguments].join(' '), 'exit')
+
+    EventReporter::CommandFactory.should_receive(:get).once.with(command_from_user) { command }
+    EventReporter::CommandFactory.should_receive(:get).once.with('exit') { command }
+
+    command.should_receive(:run).with(command_arguments)
+    command.should_receive(:run).with(nil)
 
     cli.start
   end

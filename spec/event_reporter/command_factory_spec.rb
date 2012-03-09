@@ -12,6 +12,11 @@ describe EventReporter::CommandFactory do
     command.should be_a EventReporter::Command::Help
   end
 
+  it "knows about the load command" do
+    command = EventReporter::CommandFactory.get('load')
+    command.should be_a EventReporter::Command::Load
+  end
+
   it "returns an unknown command if the command is not known" do
     command = EventReporter::CommandFactory.get('yo')
     command.should be_a EventReporter::Command::Unknown

@@ -11,11 +11,12 @@ module EventReporter
       command = nil
       while command != 'exit'
         @output_stream << "Please enter a command (type 'help' for a list of commands): "
-        command = @input_stream.gets.chomp
+        input_from_user = @input_stream.gets.chomp
+        command, command_arguments = input_from_user.split(' ')
 
         @output_stream << "\n"
         command_instance = EventReporter::CommandFactory.get(command)
-        @output_stream << command_instance.run
+        @output_stream << command_instance.run(command_arguments)
         @output_stream << "\n"
       end
     end

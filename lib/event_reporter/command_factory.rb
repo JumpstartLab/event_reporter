@@ -9,6 +9,8 @@ module EventReporter
           EventReporter::Command::Exit.new
         when 'help'
           EventReporter::Command::Help.new
+        when 'load'
+          EventReporter::Command::Load.new
         else
           EventReporter::Command::Unknown.new
       end

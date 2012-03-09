@@ -6,6 +6,7 @@ describe EventReporter::Command::Help do
     expected_output = <<-__
 exit - End the program.
 help - Output a listing of the available individual commands.
+load - Erase any loaded data and parse the specified file.
 __
     EventReporter::Command::Help.new.run.should == expected_output
   end
