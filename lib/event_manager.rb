@@ -6,6 +6,10 @@ class EventManager
   HEADERS = "LAST NAME\tFIRST NAME\tEMAIL\tZIPCODE\tCITY\tSTATE\tADDRESS"
   OUTPUT_FIELDS = [:last_name, :first_name, :email_address, :zipcode, :city, :state, :street]
 
+  def initialize
+    @queue = []
+  end
+
   # Public: Load a file into the manager
   #
   # Returns nothing
