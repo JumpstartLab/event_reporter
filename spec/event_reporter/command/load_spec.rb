@@ -18,4 +18,12 @@ describe EventReporter::Command::Load do
     end
   end
 
+  context "when EventManager can not find the file" do
+    it "reports that the file can not be found " do
+      EventManager.instance.stub(:load_file).and_raise(Errno::ENOENT)
+      file_name = 'does_not_exist.csv'
+      EventReporter::Command::Load.new.run([file_name]).should == "File not found: #{file_name}\n"
+    end
+  end
+
 end
