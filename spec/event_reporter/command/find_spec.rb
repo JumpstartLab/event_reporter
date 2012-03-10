@@ -18,7 +18,6 @@ describe EventReporter::Command::Find do
     it "tells the user that the field is invalid" do
       EventManager.instance.stub(:find).with(:foo, "12345").and_raise EventManager::InvalidFieldError
       EventReporter::Command::Find.new.run(['foo', "12345"]).should == "Invalid search field. Please try again.\n"
-
     end
   end
 
@@ -26,7 +25,6 @@ describe EventReporter::Command::Find do
     it "tells the user that the file is not loaded" do
       EventManager.instance.stub(:find).with(:foo, "12345").and_raise EventManager::FileNotLoadedError
       EventReporter::Command::Find.new.run(['foo', "12345"]).should == "File is not loaded. Please run load command.\n"
-
     end
   end
 
