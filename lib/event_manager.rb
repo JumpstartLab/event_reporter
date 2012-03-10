@@ -3,8 +3,10 @@ require "csv"
 
 class EventManager
 
-  class InvalidFieldError < StandardError; end
-  class FileNotLoadedError < StandardError; end
+  class InvalidFieldError < StandardError
+  end
+  class FileNotLoadedError < StandardError
+  end
 
   include Singleton
   HEADERS = "LAST NAME\tFIRST NAME\tEMAIL\tZIPCODE\tCITY\tSTATE\tADDRESS"
@@ -48,13 +50,27 @@ class EventManager
     [HEADERS, format_queue(@queue)].join("\n")
   end
 
+  # Public: Count the number of items in the queue
+  #
+  # Returns an integer that is the number of items in the queue
+  def count_queue
+    @queue.length
+  end
+
+  # Public: Remove all entries from the queue
+  #
+  # Returns nothing
+  def clear_queue
+    @queue.clear
+  end
+
   private
   def format_row(row)
     row.fields(*OUTPUT_FIELDS).join("\t")
   end
 
   def format_queue(queue)
-    queue.map{|row| format_row(row)}.join("\n")
+    queue.map { |row| format_row(row) }.join("\n")
   end
 
 end

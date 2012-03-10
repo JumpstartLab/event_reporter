@@ -20,6 +20,35 @@ describe EventManager do
     end
   end
 
+  describe "counting the queue" do
+    context "before a find is performed" do
+      it "returns 0" do
+        subject.count_queue.should == 0
+      end
+    end
+    context "after a find is performed" do
+      it "returns the number of items found in the search" do
+        sample_file_name = File.expand_path('../fixture_files/sample_event_attendees.csv', __FILE__)
+        subject.load_file(sample_file_name)
+        subject.find(:zipcode, '20010')
+        subject.count_queue.should == 1
+      end
+    end
+  end
+
+  describe "clearing the queue" do
+    it "removes all entries from the queue" do
+      sample_file_name = File.expand_path('../fixture_files/sample_event_attendees.csv', __FILE__)
+      subject.load_file(sample_file_name)
+      subject.find(:zipcode, '20010')
+      subject.count_queue.should == 1
+
+      subject.clear_queue
+
+      subject.count_queue.should == 0
+    end
+  end
+
   describe "finding and printing queue" do
     context "before a file is loaded" do
       it "raises an EventManager::FileNotLoadedError" do
