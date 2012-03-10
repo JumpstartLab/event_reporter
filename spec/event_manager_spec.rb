@@ -13,8 +13,8 @@ describe EventManager do
   #end
 
   describe "#find" do
+    let(:manager) { EventManager.instance }
     it "allows me to query against last name and print the query" do
-      manager = EventManager.new
       sample_file_name = File.expand_path('../fixture_files/sample_event_attendees.csv', __FILE__)
       manager.load_file(sample_file_name)
       manager.find(:zipcode, '20010')
@@ -25,7 +25,6 @@ describe EventManager do
     end
 
     it "does not print any results if the field is not valid" do
-      manager = EventManager.new
       sample_file_name = File.expand_path('../fixture_files/sample_event_attendees.csv', __FILE__)
       manager.load_file(sample_file_name)
       manager.find(:foo, '20010')

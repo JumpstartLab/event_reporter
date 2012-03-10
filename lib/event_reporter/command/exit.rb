@@ -3,7 +3,7 @@ module EventReporter
     class Exit
       # We take an unused argument here simply to implement the proper interface
       # for commands.
-      def run(argument=nil)
+      def run(arguments)
         "Goodbye!\n"
       end
     end

@@ -1,7 +1,8 @@
-#require 'singleton'
+require 'singleton'
 require "csv"
 
 class EventManager
+  include Singleton
   HEADERS = "LAST NAME\tFIRST NAME\tEMAIL\tZIPCODE\tCITY\tSTATE\tADDRESS"
   OUTPUT_FIELDS = [:last_name, :first_name, :email_address, :zipcode, :city, :state, :street]
   #include Singleton

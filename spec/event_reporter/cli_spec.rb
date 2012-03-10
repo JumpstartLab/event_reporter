@@ -26,8 +26,8 @@ describe EventReporter::Cli do
     EventReporter::CommandFactory.should_receive(:get).once.with(command_from_user) { command }
     EventReporter::CommandFactory.should_receive(:get).once.with('exit') { command }
 
-    command.should_receive(:run).with(command_arguments)
-    command.should_receive(:run).with(nil)
+    command.should_receive(:run).with([command_arguments])
+    command.should_receive(:run).with([])
 
     cli.start
   end
