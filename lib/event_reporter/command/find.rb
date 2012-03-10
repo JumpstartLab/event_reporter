@@ -9,6 +9,8 @@ module EventReporter
           "Searching for people with #{field} = #{search_value}\n"
         rescue EventManager::InvalidFieldError
           "Invalid search field. Please try again.\n"
+        rescue EventManager::FileNotLoadedError
+          "File is not loaded. Please run load command.\n"
         end
 
       end

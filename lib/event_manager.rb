@@ -4,6 +4,7 @@ require "csv"
 class EventManager
 
   class InvalidFieldError < StandardError; end
+  class FileNotLoadedError < StandardError; end
 
   include Singleton
   HEADERS = "LAST NAME\tFIRST NAME\tEMAIL\tZIPCODE\tCITY\tSTATE\tADDRESS"
@@ -33,7 +34,9 @@ class EventManager
   #
   # Returns nothing
   # Raises EventManager::InvalidFieldError if the search field is invalid
+  # Raises EventManager::FileNotLoadedError if called before a file is loaded
   def find(field, value)
+    raise EventManager::FileNotLoadedError if @file_contents.nil?
     raise EventManager::InvalidFieldError unless @file_contents.headers.include? field
     @queue = @file_contents.find_all do |row|
       row[field] == value

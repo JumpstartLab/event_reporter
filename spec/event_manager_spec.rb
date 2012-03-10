@@ -2,22 +2,31 @@ require 'spec_helper'
 require_relative '../lib/event_manager'
 
 describe EventManager do
-  subject { EventManager.instance }
+  # Get around the singleton pattern here so you know that you
+  # are working with a new EventManager object for each test.
+  subject { EventManager.send(:new) }
+
   describe "loading a file" do
     it "erases any previously loaded searches" do
       sample_file_name = File.expand_path('../fixture_files/sample_event_attendees.csv', __FILE__)
       subject.load_file(sample_file_name)
       subject.find(:zipcode, '20010')
-      # We know that it found something in the search
+      # Assert that it found something in the search
       subject.print_queue.should =~ /20010/
 
       subject.load_file(sample_file_name)
+      # Assert that the search is gone.
       subject.print_queue.should_not =~ /20010/
-
     end
   end
 
   describe "finding and printing queue" do
+    context "before a file is loaded" do
+      it "raises an EventManager::FileNotLoadedError" do
+        expect { subject.find(:zipcode, '20010') }.to raise_error EventManager::FileNotLoadedError
+      end
+
+    end
     context "after a search" do
       it "outputs headers and the results of the query" do
         sample_file_name = File.expand_path('../fixture_files/sample_event_attendees.csv', __FILE__)
