@@ -21,9 +21,9 @@ class Array
     # We shouldn't rely on the hash order event tho it's a Ruby 1.9 feature
     CSV.generate do |csv|
       # add headers
-      csv << EventReporter::PRINT_HEADERS
+      csv << EventReporter::CSV_ATTRIBUTES
       self.each do |row|
-        csv << row.values_at(*EventReporter::PRINT_ATTRIBUTES_ORDER) if row.respond_to?(:values_at)
+        csv << row.values_at(*EventReporter::CSV_ATTRIBUTES) if row.respond_to?(:values_at)
       end
     end
   end
@@ -104,7 +104,8 @@ class EventReporter
   # Headers used to print and save the filtered results.
   PRINT_HEADERS = ['LAST NAME', 'FIRST NAME', 'EMAIL', 'ZIPCODE', 'CITY', 'STATE', 'ADDRESS']
   # sorted methods available on each record/row.
-  PRINT_ATTRIBUTES_ORDER = [:'last_name', :'first_name', :'email_address', :'zipcode', :'city', :'state', :'street']
+  PRINT_ATTRIBUTES_ORDER = [:last_name, :first_name, :email_address, :zipcode, :city, :state, :street]
+  CSV_ATTRIBUTES = [:_, :regdate, :first_name, :last_name, :email_address, :homephone, :street, :city, :state, :zipcode]
 
   # Creates a new instance of the reporter.
   # In not mentioned otherwise, the file defined in the `DEFAULT_CSV` constant
@@ -133,8 +134,6 @@ class EventReporter
       @content.each do |row|
         if row[attribute.to_sym] == criteria
           match = Hash[@content.headers.zip(row.fields)]
-          # don't store data we don't need
-          match.delete_if{|k,v| !PRINT_ATTRIBUTES_ORDER.include?(k) }
           match[:zipcode] = Helpers.clean_zipcode(match[:zipcode])
           results << match
         end
@@ -173,7 +172,7 @@ class EventReporter
         save_queue_as_csv_to(args[1])
       end
     else
-      return Helpers.red("Unknown arg #{arg}, only #{VALID_QUEUE_ARGS.join(', ')} are supported.\n")
+      return Helpers.red("Unknown queue arguments: #{args}, only #{VALID_QUEUE_ARGS.join(', ')} are supported.\n")
     end
   end
 
