@@ -1,8 +1,6 @@
 module EventReporter
   module Command
     class Help
-      # We take an unused argument here simply to implement the proper interface
-      # for commands.
       def run(arguments)
         command_to_display_help_for = arguments.join(' ')
         case command_to_display_help_for

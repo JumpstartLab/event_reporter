@@ -46,6 +46,8 @@ class EventManager
   end
 
   # Public: Print the current results in the queue
+  #
+  # Returns a string that represents what is in the queue with headers.
   def print_queue
     [HEADERS, format_queue(@queue)].join("\n")
   end
