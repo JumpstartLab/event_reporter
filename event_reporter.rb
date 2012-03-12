@@ -43,7 +43,33 @@ class Array
     end
     output
   end
+end
 
+module Kernel
+
+  # Prints a string in a paginated way based on the return carriage.
+  # The user is required to press enter to keep scrolling through the results.
+  # @param [String] text The text to print.
+  # @param [Fixnum] max_lines The amount of lines to print at once.
+  def print_paged(text, max_lines=10)
+    lines = text.split("\n")
+    nbr_slices = (lines.length / max_lines.to_f).ceil
+    i = 0
+    lines.each_slice(max_lines) do |slice|
+      print slice.join("\n") + "\n"
+      i += 1
+      if i < nbr_slices
+        print Helpers.gray("Press <enter> to paginate through the result of the results.")
+        while pressed = gets.chomp
+          if pressed == "" || pressed == " "
+            break
+          else
+            print Helpers.read("I said <enter> not #{pressed}!\n")
+          end
+        end
+      end
+    end
+  end
 end
 
 # Various helpers "packaged" in a module.
@@ -401,13 +427,13 @@ unless ENV['TEST']
   Type `help` for more info on the available commands.\n")
   while command = gets.chomp
     args = command.split(/\s+/)
-    cmd = args[0]
+    cmd = args[0] || ''
     if !cmd.empty? && CLIController.respond_to?(cmd)
       print Helpers.green(" > #{command}\n")
-      print CLIController.send(cmd, *args[1..-1])
+      print_paged CLIController.send(cmd, *args[1..-1])
     else
       print Helpers.green(" > #{command}\n")
-      print CLIHelp.for(command.gsub(/^help\s+/, ''))
+      print_paged CLIHelp.for(command.gsub(/^help\s+/, ''))
     end
     print Helpers.gray("----\n")
   end
