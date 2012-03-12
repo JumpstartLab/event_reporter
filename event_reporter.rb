@@ -64,7 +64,7 @@ module Kernel
           if pressed == "" || pressed == " "
             break
           else
-            print Helpers.read("I said <enter> not #{pressed}!\n")
+            print Helpers.red("I said <enter> not #{pressed}!\n")
           end
         end
       end
