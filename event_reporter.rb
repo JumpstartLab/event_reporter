@@ -28,6 +28,22 @@ class Array
     end
   end
 
+  # Compares the integer value of each item of an array
+  # and returns an array containing the bigger cast value.
+  # Note: kinda crazysauce, do not use in prod!
+  # @param [Array] The array to compare against
+  # @return [Array<Integer>]
+  def bigger_integer_values(other_array)
+    raise ArgumentError unless other_array.is_a?(Array)
+    output = Array.new(self.length)
+    converter = lambda{|v| v.is_a?(Fixnum) ? v : v.to_s.length}
+    each_with_index do |item, idx|
+      a, b = converter.call(item), converter.call(other_array[idx])
+      output[idx] = a > b ? a : b
+    end
+    output
+  end
+
 end
 
 # Various helpers "packaged" in a module.
@@ -74,10 +90,15 @@ module Helpers
 
   # Formats a row/record in a way that can be nicely printed on screen
   # @param [Hash] row_hash A queue row to format
-  # @param [String] joined_by A string used to join all the row/record attributs
+  # @param [NilClass, Array] col_width A optional array with the width of each column
   # @return [String] The formatted string version of the passed param.
-  def self.print_row_format(row_hash, joined_by="\t")
-    EventReporter::PRINT_ATTRIBUTES_ORDER.map{|attr| row_hash[attr]}.join(joined_by)
+  def self.print_row_format(row_hash, col_widths=nil)
+    col_widths ||= []
+    output = Array.new(row_hash.keys.length)
+    EventReporter::PRINT_ATTRIBUTES_ORDER.each_with_index do |attr, idx|
+      output[idx] = row_hash[attr].ljust(col_widths[idx] || 0, " ")
+    end
+    output.join("\t")
   end
 
   # Formats a queue in a way that can be nicely printed to screen
@@ -85,9 +106,43 @@ module Helpers
   # @return [String] The output ready to be printed to screen
   def self.queue_print_format(queue)
     output = []
-    output << Helpers.green(EventReporter::PRINT_HEADERS.join("\t"))
-    output += queue.map{|row| Helpers.print_row_format(row)}
+    return red("The queue is currently empty.\n") if queue.empty?
+    col_widths = max_widths_for_queue(queue)
+    headers = []
+    EventReporter::PRINT_HEADERS.each_with_index do |h, idx| 
+      headers << h.ljust(col_widths[idx], " ")
+    end
+    output << green(headers.join("\t"))
+    output += queue.map{|row| Helpers.print_row_format(row, col_widths)}
     output.join("\n") + "\n"
+  end
+
+  # Calculates the max width of each column
+  # by looking at the longest value.
+  # @param [Array] queue The queue to inspect.
+  # @return [Array] Array of the max values in the queue format
+  def self.max_widths_for_queue(queue)
+    sizes = Array.new(row_sorted_print_values(queue.first).size, 0)
+    # I could have loaded all the variables in memory and use #max each array representing
+    # the values as shown below. But it wouldn't have been fun and it would have required
+    # to create a copy of all the objects in memory so I decided to go the more complex/fun way.
+    # While I had fun, the code is complicated and hard to justify, don't do that in prod ;)
+    # What I should have done:
+    #   EventReporter::PRINT_ATTRIBUTES_ORDER.map do |attr|
+    #     queue.map{|r| r[attr].to_s.size}.max
+    #   end
+    # What I did instead:
+    queue.each do |row|
+      sizes = row_sorted_print_values(row).bigger_integer_values(sizes)
+    end
+    sizes
+  end
+
+  # Returns the print values for a given row
+  # @param [Hash] The row to extract the values from.
+  # @return [Array]
+  def self.row_sorted_print_values(row)
+    row.values_at(*EventReporter::PRINT_ATTRIBUTES_ORDER)
   end
 
 end
@@ -105,6 +160,7 @@ class EventReporter
   PRINT_HEADERS = ['LAST NAME', 'FIRST NAME', 'EMAIL', 'ZIPCODE', 'CITY', 'STATE', 'ADDRESS']
   # sorted methods available on each record/row.
   PRINT_ATTRIBUTES_ORDER = [:last_name, :first_name, :email_address, :zipcode, :city, :state, :street]
+  # Expected CSV attributes
   CSV_ATTRIBUTES = [:_, :regdate, :first_name, :last_name, :email_address, :homephone, :street, :city, :state, :zipcode]
 
   # Creates a new instance of the reporter.
@@ -332,18 +388,25 @@ end
 # Print a nice message before exiting
 trap("INT") { print "Thanks for visiting, come again!\n"; exit }
 
-#################  Loop used to capture the user's input  ####################
-print Helpers.bold("Welcome to EventReporter, what you would like to do today?\n\
-Type `help` for more info on the available commands.\n")
-while command = gets.chomp
-  args = command.split(/\s+/)
-  cmd = args[0]
-  if !cmd.empty? && CLIController.respond_to?(cmd)
-    print Helpers.green(" > #{command}\n")
-    print CLIController.send(cmd, *args[1..-1])
-  else
-    print Helpers.green(" > #{command}\n")
-    print CLIHelp.for(command.gsub(/^help\s+/, ''))
+# setting the TEST env variable skips the loop
+# so the code can be loaded in IRB or in a test suite without blocking
+# the run loop.
+# Example:
+#     $ TEST=1 irb -r./event_reporter
+unless ENV['TEST']
+  #################  Loop used to capture the user's input  ####################
+  print Helpers.bold("Welcome to EventReporter, what you would like to do today?\n\
+  Type `help` for more info on the available commands.\n")
+  while command = gets.chomp
+    args = command.split(/\s+/)
+    cmd = args[0]
+    if !cmd.empty? && CLIController.respond_to?(cmd)
+      print Helpers.green(" > #{command}\n")
+      print CLIController.send(cmd, *args[1..-1])
+    else
+      print Helpers.green(" > #{command}\n")
+      print CLIHelp.for(command.gsub(/^help\s+/, ''))
+    end
+    print Helpers.gray("----\n")
   end
-  print Helpers.gray("----\n")
 end

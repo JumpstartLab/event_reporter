@@ -172,7 +172,23 @@ via a virtual "queue"</p>
 
 </div>
         </dt>
-        <dd><pre class="code"><span class='lbracket'>[</span><span class='symbol'>:last_name</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='symbol'>:first_name</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='symbol'>:email_address</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='symbol'>:zipcode</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='symbol'>:city</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='symbol'>:state</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='symbol'>:street</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span></pre></dd>
+        <dd><pre class="code"><span class='lbracket'>[</span><span class='symbol'>:last_name</span><span class='comma'>,</span> <span class='symbol'>:first_name</span><span class='comma'>,</span> <span class='symbol'>:email_address</span><span class='comma'>,</span> <span class='symbol'>:zipcode</span><span class='comma'>,</span> <span class='symbol'>:city</span><span class='comma'>,</span> <span class='symbol'>:state</span><span class='comma'>,</span> <span class='symbol'>:street</span><span class='rbracket'>]</span></pre></dd>
+      
+        <dt id="CSV_ATTRIBUTES-constant" class="">CSV_ATTRIBUTES =
+          <div class="docstring">
+  <div class="discussion">
+    
+<p>Expected CSV attributes</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='lbracket'>[</span><span class='symbol'>:_</span><span class='comma'>,</span> <span class='symbol'>:regdate</span><span class='comma'>,</span> <span class='symbol'>:first_name</span><span class='comma'>,</span> <span class='symbol'>:last_name</span><span class='comma'>,</span> <span class='symbol'>:email_address</span><span class='comma'>,</span> <span class='symbol'>:homephone</span><span class='comma'>,</span> <span class='symbol'>:street</span><span class='comma'>,</span> <span class='symbol'>:city</span><span class='comma'>,</span> <span class='symbol'>:state</span><span class='comma'>,</span> <span class='symbol'>:zipcode</span><span class='rbracket'>]</span></pre></dd>
       
     </dl>
   
@@ -392,15 +408,15 @@ file defined in the `DEFAULT_CSV` constant is loaded.</p>
       <pre class="lines">
 
 
-115
-116
-117
-118
-119
-120</pre>
+172
+173
+174
+175
+176
+177</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'event_reporter.rb', line 115</span>
+      <pre class="code"><span class="info file"># File 'event_reporter.rb', line 172</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='op'>=</span><span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_path'>path</span> <span class='op'>||=</span> <span class='const'>DEFAULT_CSV</span>
@@ -501,28 +517,26 @@ is returned.</p>
       <pre class="lines">
 
 
-129
-130
-131
-132
-133
-134
-135
-136
-137
-138
-139
-140
-141
-142
-143
-144
-145
-146
-147</pre>
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'event_reporter.rb', line 129</span>
+      <pre class="code"><span class="info file"># File 'event_reporter.rb', line 186</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_find_all'>find_all</span><span class='lparen'>(</span><span class='id identifier rubyid_attribute'>attribute</span><span class='comma'>,</span> <span class='id identifier rubyid_criteria'>criteria</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='const'>PRINT_ATTRIBUTES_ORDER</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_attribute'>attribute</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span><span class='rparen'>)</span>
@@ -531,8 +545,6 @@ is returned.</p>
     <span class='ivar'>@content</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_row'>row</span><span class='op'>|</span>
       <span class='kw'>if</span> <span class='id identifier rubyid_row'>row</span><span class='lbracket'>[</span><span class='id identifier rubyid_attribute'>attribute</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='id identifier rubyid_criteria'>criteria</span>
         <span class='id identifier rubyid_match'>match</span> <span class='op'>=</span> <span class='const'>Hash</span><span class='lbracket'>[</span><span class='ivar'>@content</span><span class='period'>.</span><span class='id identifier rubyid_headers'>headers</span><span class='period'>.</span><span class='id identifier rubyid_zip'>zip</span><span class='lparen'>(</span><span class='id identifier rubyid_row'>row</span><span class='period'>.</span><span class='id identifier rubyid_fields'>fields</span><span class='rparen'>)</span><span class='rbracket'>]</span>
-        <span class='comment'># don't store data we don't need
-</span>        <span class='id identifier rubyid_match'>match</span><span class='period'>.</span><span class='id identifier rubyid_delete_if'>delete_if</span><span class='lbrace'>{</span><span class='op'>|</span><span class='id identifier rubyid_k'>k</span><span class='comma'>,</span><span class='id identifier rubyid_v'>v</span><span class='op'>|</span> <span class='op'>!</span><span class='const'>PRINT_ATTRIBUTES_ORDER</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_k'>k</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
         <span class='id identifier rubyid_match'>match</span><span class='lbracket'>[</span><span class='symbol'>:zipcode</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='const'>Helpers</span><span class='period'>.</span><span class='id identifier rubyid_clean_zipcode'>clean_zipcode</span><span class='lparen'>(</span><span class='id identifier rubyid_match'>match</span><span class='lbracket'>[</span><span class='symbol'>:zipcode</span><span class='rbracket'>]</span><span class='rparen'>)</span>
         <span class='id identifier rubyid_results'>results</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_match'>match</span>
       <span class='kw'>end</span>
@@ -629,34 +641,34 @@ the available queue commands or even better check the help.</p>
       <pre class="lines">
 
 
-154
-155
-156
-157
-158
-159
-160
-161
-162
-163
-164
-165
-166
-167
-168
-169
-170
-171
-172
-173
-174
-175
-176
-177
-178</pre>
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'event_reporter.rb', line 154</span>
+      <pre class="code"><span class="info file"># File 'event_reporter.rb', line 209</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_queue'>queue</span><span class='lparen'>(</span><span class='id identifier rubyid_cmd'>cmd</span><span class='comma'>,</span> <span class='id identifier rubyid_args'>args</span><span class='op'>=</span><span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='kw'>case</span> <span class='id identifier rubyid_cmd'>cmd</span>
@@ -680,7 +692,7 @@ the available queue commands or even better check the help.</p>
       <span class='id identifier rubyid_save_queue_as_csv_to'>save_queue_as_csv_to</span><span class='lparen'>(</span><span class='id identifier rubyid_args'>args</span><span class='lbracket'>[</span><span class='int'>1</span><span class='rbracket'>]</span><span class='rparen'>)</span>
     <span class='kw'>end</span>
   <span class='kw'>else</span>
-    <span class='kw'>return</span> <span class='const'>Helpers</span><span class='period'>.</span><span class='id identifier rubyid_red'>red</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Unknown arg </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_arg'>arg</span><span class='rbrace'>}</span><span class='tstring_content'>, only </span><span class='embexpr_beg'>#{</span><span class='const'>VALID_QUEUE_ARGS</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>, </span><span class='tstring_end'>'</span></span><span class='rparen'>)</span><span class='rbrace'>}</span><span class='tstring_content'> are supported.\n</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+    <span class='kw'>return</span> <span class='const'>Helpers</span><span class='period'>.</span><span class='id identifier rubyid_red'>red</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Unknown queue arguments: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_args'>args</span><span class='rbrace'>}</span><span class='tstring_content'>, only </span><span class='embexpr_beg'>#{</span><span class='const'>VALID_QUEUE_ARGS</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>, </span><span class='tstring_end'>'</span></span><span class='rparen'>)</span><span class='rbrace'>}</span><span class='tstring_content'> are supported.\n</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -750,20 +762,20 @@ the available queue commands or even better check the help.</p>
       <pre class="lines">
 
 
-185
-186
-187
-188
-189
-190
-191
-192
-193
-194
-195</pre>
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'event_reporter.rb', line 185</span>
+      <pre class="code"><span class="info file"># File 'event_reporter.rb', line 240</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_save_queue_as_csv_to'>save_queue_as_csv_to</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_path'>path</span> <span class='op'>=</span> <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_expand_path'>expand_path</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
@@ -850,16 +862,16 @@ the available queue commands or even better check the help.</p>
       <pre class="lines">
 
 
-202
-203
-204
-205
-206
-207
-208</pre>
+257
+258
+259
+260
+261
+262
+263</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'event_reporter.rb', line 202</span>
+      <pre class="code"><span class="info file"># File 'event_reporter.rb', line 257</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_sorted_queue_print_format_by'>sorted_queue_print_format_by</span><span class='lparen'>(</span><span class='id identifier rubyid_attr'>attr</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='const'>PRINT_ATTRIBUTES_ORDER</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_attr'>attr</span><span class='rparen'>)</span>
@@ -878,7 +890,7 @@ the available queue commands or even better check the help.</p>
 </div>
     
     <div id="footer">
-  Generated on Fri Mar  9 20:39:16 2012 by 
+  Generated on Mon Mar 12 01:02:25 2012 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.7.5 (ruby-1.9.3).
 </div>
