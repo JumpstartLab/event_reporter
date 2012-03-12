@@ -11,6 +11,7 @@ class EventManager
   include Singleton
   HEADERS = "LAST NAME\tFIRST NAME\tEMAIL\tZIPCODE\tCITY\tSTATE\tADDRESS"
   OUTPUT_FIELDS = [:last_name, :first_name, :email_address, :zipcode, :city, :state, :street]
+  INVALID_ZIPCODE = '00000'
 
   def initialize
     @queue = []
@@ -23,6 +24,10 @@ class EventManager
   def load_file(file_name)
     @queue = []
     @file_contents = CSV.read(file_name, {:headers => true, :header_converters => :symbol})
+    # not the most effective way since you will be iterating the file twice
+    # If file loading starts to take a longer time then re-evaluate
+    # this.
+    format_zipcodes(@file_contents)
   end
 
   # Public: Load the queue with results that match the query.
@@ -73,6 +78,14 @@ class EventManager
 
   def format_queue(queue)
     queue.map { |row| format_row(row) }.join("\n")
+  end
+
+  def format_zipcodes(csv_table)
+    csv_table.each { |x| x[:zipcode] = clean_zipcode(x[:zipcode]) }
+  end
+
+  def clean_zipcode(dirty_zipcode)
+    dirty_zipcode.nil? ? INVALID_ZIPCODE : dirty_zipcode.rjust(5, "0")
   end
 
 end

@@ -26,6 +26,22 @@ describe EventManager do
       # Assert that the search is gone.
       subject.print_queue.should_not match /20010/
     end
+
+    it "pads all zipcodes to 5 characters" do
+      load_file
+      subject.find(:zipcode, '07306')
+      # we should find one since there is one row in the
+      # test data that was padded
+      subject.print_queue.should match /07306/
+    end
+
+    it "sets missing zipcodes to 00000" do
+      load_file
+      subject.find(:zipcode, '00000')
+      #  we should find one since there is one row in the
+      #  test data that was missing
+      subject.print_queue.should match /00000/
+    end
   end
 
   describe "counting the queue" do
