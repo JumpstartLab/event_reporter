@@ -199,7 +199,7 @@ class EventReporter
     path ||= DEFAULT_CSV
     print "loading and parsing #{path}\n"
     @content = CSV.read(path, {:headers => true, :header_converters => :symbol})
-    @queue = []
+    @queue = EventReporterQueue.new
   end
 
   # Searches the existing queue and find all instances where the given attribute matches
@@ -283,6 +283,38 @@ class EventReporter
   # @param [Symbol] attr The attribute to sort by the queue before printing it.
   # @return [String] The output ready to be printed to screen.
   def sorted_queue_print_format_by(attr)
+    if PRINT_ATTRIBUTES_ORDER.include?(attr)
+      Helpers.queue_print_format(@queue.sort_by{|item| item[attr]})
+    else
+      Helpers.red("Unknown queue sorting attribute: #{attr}, try one of the following: #{PRINT_ATTRIBUTES_ORDER.join(', ')}.\n")
+    end
+  end
+
+end
+
+# Wraps a list of CSV record/hash objects into its own object.
+class EventReporterQueue < Array
+
+  # Saves as a csv file.
+  # @param [String] Path to the file to save.
+  # @return [String] Status message describing the status of the file being saved.
+  def save_as_csv_to(path)
+    path = File.expand_path(path)
+    print "Attempting to save the current queue to #{path}\n"
+    begin
+      File.open(path, 'wb'){|f| f << @queue.to_csv_string }
+    rescue Errno::ENOENT => e
+      Helpers.red("Error trying to save the queue, check the destination location. #{e.message}\n")
+    else
+      "Queue exported.\n"
+    end
+  end
+
+  # Sorts by the passed attribute and formats for print.
+  # @see Helpers#queue_print_format
+  # @param [Symbol] attr The attribute to sort by the queue before printing it.
+  # @return [String] The output ready to be printed to screen.
+  def sorted_print_format_by(attr)
     if PRINT_ATTRIBUTES_ORDER.include?(attr)
       Helpers.queue_print_format(@queue.sort_by{|item| item[attr]})
     else
