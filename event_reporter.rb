@@ -181,14 +181,16 @@ class EventReporter
   # Results are stored in the queue and not printed right away, but an indication of the amount
   # of matching results is returned.
   # @param [String, Symbol] attribute The attribute to apply the search on.
-  # @param [String] criteria the exact match we are looking for.
+  # @param [String] criteria the exact match we are looking for (case insensitive).
   # @return [String] An indication about the amount of matches found in the queue.
   def find_all(attribute, criteria)
     if PRINT_ATTRIBUTES_ORDER.include?(attribute.to_sym)
       @queue.clear
       results = []
       @content.each do |row|
-        if row[attribute.to_sym] == criteria
+        looked_up_value = row[attribute.to_sym]
+        next unless looked_up_value
+        if looked_up_value.downcase == criteria.downcase
           match = Hash[@content.headers.zip(row.fields)]
           match[:zipcode] = Helpers.clean_zipcode(match[:zipcode])
           results << match
