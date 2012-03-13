@@ -84,7 +84,7 @@ describe EventManager do
 LAST NAME\tFIRST NAME\tEMAIL\tZIPCODE\tCITY\tSTATE\tADDRESS
 Nguyen\tAllison\tarannon@jumpstartlab.com\t20010\tWashington\tDC\t3155 19th St NW
 Hankins\tSArah\tpinalevitsky@jumpstartlab.com\t20010\tWashington\tDC\t2022 15th Street NW
-__
+          __
 
           subject.print_queue.should == expected_output.chomp
         end
@@ -98,10 +98,23 @@ __
 LAST NAME\tFIRST NAME\tEMAIL\tZIPCODE\tCITY\tSTATE\tADDRESS
 Hankins\tSArah\tpinalevitsky@jumpstartlab.com\t20010\tWashington\tDC\t2022 15th Street NW
 Nguyen\tAllison\tarannon@jumpstartlab.com\t20010\tWashington\tDC\t3155 19th St NW
-__
+          __
 
           subject.print_queue(:last_name).should == expected_output.chomp
         end
+      end
+
+    end
+    context "for a case insensitive search" do
+      it "finds the proper data row" do
+        load_file
+        subject.find(:last_name, 'hankins')
+        expected_output = <<-__
+LAST NAME\tFIRST NAME\tEMAIL\tZIPCODE\tCITY\tSTATE\tADDRESS
+Hankins\tSArah\tpinalevitsky@jumpstartlab.com\t20010\tWashington\tDC\t2022 15th Street NW
+        __
+
+        subject.print_queue.should == expected_output.chomp
       end
 
     end

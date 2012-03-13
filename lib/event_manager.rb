@@ -46,7 +46,7 @@ class EventManager
     raise EventManager::FileNotLoadedError if @file_contents.nil?
     raise EventManager::InvalidFieldError unless @file_contents.headers.include? field
     @queue = @file_contents.find_all do |row|
-      row[field] == value
+      row[field].downcase == value.downcase
     end
   end
 
