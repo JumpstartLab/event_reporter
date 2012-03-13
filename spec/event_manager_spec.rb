@@ -6,11 +6,6 @@ def load_file
   subject.load_file(sample_file_name)
 end
 
-def find_item
-  load_file
-  subject.find(:zipcode, '20010')
-end
-
 describe EventManager do
   # Get around the singleton pattern here so you know that you
   # are working with a new EventManager object for each test.
@@ -18,7 +13,8 @@ describe EventManager do
 
   describe "loading a file" do
     it "erases any previously loaded searches" do
-      find_item
+      load_file
+      subject.find(:zipcode, '20010')
       # Assert that it found something in the search
       subject.print_queue.should match /20010/
 
@@ -52,16 +48,18 @@ describe EventManager do
     end
     context "after a find is performed" do
       it "returns the number of items found in the search" do
-        find_item
-        subject.count_queue.should == 1
+        load_file
+        subject.find(:zipcode, '20010')
+        subject.count_queue.should == 2
       end
     end
   end
 
   describe "clearing the queue" do
     it "removes all entries from the queue" do
-      find_item
-      subject.count_queue.should == 1
+      load_file
+      subject.find(:zipcode, '20010')
+      subject.count_queue.should == 2
 
       subject.clear_queue
 
@@ -77,13 +75,27 @@ describe EventManager do
 
     end
     context "after a search" do
-      it "outputs headers and the results of the query" do
-        find_item
+      context "without a sorting criteria" do
+        it "outputs headers and the results of the query" do
+          load_file
+          subject.find(:zipcode, '20010')
 
-        expected_output = "LAST NAME\tFIRST NAME\tEMAIL\tZIPCODE\tCITY\tSTATE\tADDRESS\nNguyen\tAllison\tarannon@jumpstartlab.com\t20010\tWashington\tDC\t3155 19th St NW"
+          expected_output = "LAST NAME\tFIRST NAME\tEMAIL\tZIPCODE\tCITY\tSTATE\tADDRESS\nNguyen\tAllison\tarannon@jumpstartlab.com\t20010\tWashington\tDC\t3155 19th St NW\nHankins\tSArah\tpinalevitsky@jumpstartlab.com\t20010\tWashington\tDC\t2022 15th Street NW"
 
-        subject.print_queue.should == expected_output
+          subject.print_queue.should == expected_output
+        end
       end
+      context "with a sorting criteria" do
+        it "outputs headers and sorts the results by the sorting criteria" do
+          load_file
+          subject.find(:zipcode, '20010')
+
+          expected_output = "LAST NAME\tFIRST NAME\tEMAIL\tZIPCODE\tCITY\tSTATE\tADDRESS\nHankins\tSArah\tpinalevitsky@jumpstartlab.com\t20010\tWashington\tDC\t2022 15th Street NW\nNguyen\tAllison\tarannon@jumpstartlab.com\t20010\tWashington\tDC\t3155 19th St NW"
+
+          subject.print_queue(:last_name).should == expected_output
+        end
+      end
+
     end
     context "with an invalid search field" do
       it "raises a EventManager::InvalidFieldError" do

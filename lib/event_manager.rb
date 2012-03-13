@@ -52,9 +52,11 @@ class EventManager
 
   # Public: Print the current results in the queue
   #
+  # sort_columns  - A Symbol that determines what field to sort by. Defaults to nil
+  #
   # Returns a string that represents what is in the queue with headers.
-  def print_queue
-    [HEADERS, format_queue(@queue)].join("\n")
+  def print_queue(sort_column = nil)
+    [HEADERS, format_queue(sort_queue(@queue,sort_column))].join("\n")
   end
 
   # Public: Count the number of items in the queue
@@ -78,6 +80,12 @@ class EventManager
 
   def format_queue(queue)
     queue.map { |row| format_row(row) }.join("\n")
+  end
+
+  def sort_queue(queue, sort_column)
+    queue.sort do |row_one, row_two|
+      row_one[sort_column] <=> row_two[sort_column]
+    end
   end
 
   def format_zipcodes(csv_table)

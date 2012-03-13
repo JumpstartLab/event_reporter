@@ -5,7 +5,11 @@ module EventReporter
         queue_command = arguments[0]
         case queue_command
           when 'print'
-            EventManager.instance.print_queue
+            if arguments[1]  == 'by'
+              EventManager.instance.print_queue(arguments[2].to_sym)
+            else
+              EventManager.instance.print_queue
+            end
           when 'clear'
             EventManager.instance.clear_queue
             "Queue cleared.\n"

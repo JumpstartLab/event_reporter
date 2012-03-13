@@ -8,7 +8,15 @@ describe EventReporter::Command::Queue do
       EventManager.instance.stub(:print_queue) { expected_output }
       EventReporter::Command::Queue.new.run(['print']).should == expected_output
     end
+    context "and sort by a field" do
+      it "prints out the results from the event manager with a sorting column" do
+        expected_output = "Field1\tField2\nValue1\tValue2"
+        EventManager.instance.stub(:print_queue).with(:zipcode) { expected_output }
+        EventReporter::Command::Queue.new.run(["print", "by", "zipcode"]).should == expected_output
+      end
+    end
   end
+
   context "when a user wants to clear the queue" do
     it "tells the user that the queue is clear" do
       expected_output = "Queue cleared.\n"
