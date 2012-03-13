@@ -80,9 +80,13 @@ describe EventManager do
           load_file
           subject.find(:zipcode, '20010')
 
-          expected_output = "LAST NAME\tFIRST NAME\tEMAIL\tZIPCODE\tCITY\tSTATE\tADDRESS\nNguyen\tAllison\tarannon@jumpstartlab.com\t20010\tWashington\tDC\t3155 19th St NW\nHankins\tSArah\tpinalevitsky@jumpstartlab.com\t20010\tWashington\tDC\t2022 15th Street NW"
+          expected_output = <<-__
+LAST NAME\tFIRST NAME\tEMAIL\tZIPCODE\tCITY\tSTATE\tADDRESS
+Nguyen\tAllison\tarannon@jumpstartlab.com\t20010\tWashington\tDC\t3155 19th St NW
+Hankins\tSArah\tpinalevitsky@jumpstartlab.com\t20010\tWashington\tDC\t2022 15th Street NW
+__
 
-          subject.print_queue.should == expected_output
+          subject.print_queue.should == expected_output.chomp
         end
       end
       context "with a sorting criteria" do
@@ -90,9 +94,13 @@ describe EventManager do
           load_file
           subject.find(:zipcode, '20010')
 
-          expected_output = "LAST NAME\tFIRST NAME\tEMAIL\tZIPCODE\tCITY\tSTATE\tADDRESS\nHankins\tSArah\tpinalevitsky@jumpstartlab.com\t20010\tWashington\tDC\t2022 15th Street NW\nNguyen\tAllison\tarannon@jumpstartlab.com\t20010\tWashington\tDC\t3155 19th St NW"
+          expected_output = <<-__
+LAST NAME\tFIRST NAME\tEMAIL\tZIPCODE\tCITY\tSTATE\tADDRESS
+Hankins\tSArah\tpinalevitsky@jumpstartlab.com\t20010\tWashington\tDC\t2022 15th Street NW
+Nguyen\tAllison\tarannon@jumpstartlab.com\t20010\tWashington\tDC\t3155 19th St NW
+__
 
-          subject.print_queue(:last_name).should == expected_output
+          subject.print_queue(:last_name).should == expected_output.chomp
         end
       end
 
